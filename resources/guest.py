@@ -7,7 +7,11 @@ from flask_restful import Resource
 
 from models.event import EventModel
 from models.guest import GuestModel
+from schemas.guest import GuestSchema
 from utils.auth import jwt_required, decode_token
+from utils.pagination import create_pagination
+
+guest_list_schema = GuestSchema(many=True)
 
 
 class Login(Resource):
@@ -25,8 +29,20 @@ class Login(Resource):
 class CreateRetrieveDestroyGuests(Resource):
 
     @classmethod
-    def get(cls):
-        pass
+    def get(cls, event_id: int):
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 20))
+
+        paginated_events = EventModel.get_guests_list(event_id=event_id,
+                                                      page=page,
+                                                      limit=limit)
+
+        response = create_pagination(items=paginated_events,
+                                     schema=guest_list_schema,
+                                     page=page,
+                                     url=request.url_root)
+
+        return response, 200
 
     @classmethod
     @jwt_required()

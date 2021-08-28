@@ -9,17 +9,17 @@ from db import db
 from models.guest import GuestModel
 from models.participant import ParticipantModel
 
+guest_event = db.Table(
+    'guest_event',
+    db.Column('guest_id', db.Integer(), db.ForeignKey('guests.id')),
+    db.Column('event_id', db.Integer(), db.ForeignKey('events.id'))
+)
+
 participant_event = db.Table(
     'participant_event',
     db.Column('participant_id', db.Integer(),
               db.ForeignKey('participants.id')),
     db.Column('event_id', db.Integer(), db.ForeignKey('events.id')),
-)
-
-guest_event = db.Table(
-    'guest_event',
-    db.Column('guest_id', db.Integer(), db.ForeignKey('guests.id')),
-    db.Column('event_id', db.Integer(), db.ForeignKey('events.id'))
 )
 
 
@@ -67,6 +67,12 @@ class EventModel(db.Model):
                    for attribute, value in filters.items()]
         # Filter and Paginate the query
         return cls.query.filter(and_(*filters)).paginate(page, limit)
+
+    @classmethod
+    def get_guests_list(cls, event_id: int, page: int = 1, limit: int = 20) \
+            -> Pagination:
+        return GuestModel.query.filter(cls.id == event_id) \
+            .paginate(page, limit)
 
     def save_to_db(self) -> None:
         db.session.add(self)

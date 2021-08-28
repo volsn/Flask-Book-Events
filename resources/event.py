@@ -9,7 +9,7 @@ from utils.pagination import create_pagination
 
 event_schema = EventSchema()
 event_list_schema = EventSchema(many=True,
-                                exclude=('guests', 'participants',))
+                                exclude=('participants',))
 
 
 class RetrieveUpdateDestroyEvent(Resource):
@@ -47,7 +47,7 @@ class ListCreateEvent(Resource):
     @classmethod
     def get(cls):
         filters = dict(request.args)
-        page = int(filters.pop('page', 1))
+        page = int(filters.pop('page', 1))  # TODO: Check if we need int()
         limit = int(filters.pop('limit', 20))
 
         paginated_events = EventModel.get_list(filters=request.args,
