@@ -26,7 +26,7 @@ class Login(Resource):
         return json.loads(response.text), response.status_code
 
 
-class CreateRetrieveDestroyGuests(Resource):
+class EventGuests(Resource):
 
     @classmethod
     def get(cls, event_id: int):
@@ -86,3 +86,37 @@ class CreateRetrieveDestroyGuests(Resource):
         event.save_to_db()
 
         return {'message': 'Successfully unregister from Event.'}, 200
+
+
+class GuestResource(Resource):
+    @classmethod
+    def get(cls):
+        pass
+
+    @classmethod
+    @jwt_required(admin=True, owner=True)
+    def put(cls, id_):
+        guest = GuestModel.find_by_id(id_)
+        if guest is None:
+            guest = GuestModel(id=id_)
+
+        books_url = os.getenv('BOOKS_URL')
+        user_details = requests.get(f'{books_url}/api/user/{id_}')
+
+        if user_details.status_code != 200:
+            return {'message': f'Error loading User details.'}, 500
+
+        guest.name = user_details.json()['name']
+        guest.save_to_db()
+
+        return {'message': 'Updated Profile.'}, 200
+
+    @classmethod
+    @jwt_required(admin=True, owner=True)
+    def delete(cls, id_):
+        guest = GuestModel.find_by_id(id_)
+        if guest is None:
+            return {'message': f'User with id {id_} not found.'}, 404
+
+        guest.delete_from_db()
+        return {'message': 'User successfully deleted.'}, 200
