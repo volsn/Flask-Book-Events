@@ -1,3 +1,6 @@
+"""
+Module for Event Endpoints
+"""
 from typing import Dict, Tuple
 
 from flask import request
@@ -17,6 +20,11 @@ event_list_schema = EventSchema(many=True,
 class RetrieveUpdateDestroyEvent(Resource):
     @classmethod
     def get(cls, id_: int) -> Tuple[Dict, int]:
+        """
+        Retrieve Details on Event
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         event = EventModel.find_by_id(id_)
         if event:
             return event_schema.dump(event), 200
@@ -25,7 +33,12 @@ class RetrieveUpdateDestroyEvent(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def put(cls, id_: int):
+    def put(cls, id_: int) -> Tuple[Dict, int]:
+        """
+        Update Details about Event
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         event_json = request.get_json()
         event = EventModel.find_by_id(id_)
 
@@ -36,7 +49,12 @@ class RetrieveUpdateDestroyEvent(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def delete(cls, id_: int):
+    def delete(cls, id_: int) -> Tuple[Dict, int]:
+        """
+        Delete Event
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         event = EventModel.find_by_id(id_)
 
         if event:
@@ -47,18 +65,23 @@ class RetrieveUpdateDestroyEvent(Resource):
 
 class ListCreateEvent(Resource):
     @classmethod
-    def get(cls):
+    def get(cls) -> Tuple[Dict, int]:
+        """
+        Get list of Events. Filter, Ordered and Paginated
+        :return: Tuple[Dict, int]
+        """
         filters = dict(request.args)
         page = int(filters.pop('page', 1))
         limit = int(filters.pop('limit', 20))
 
-        paginated_events = EventModel.get_list(filters=filters,
+        paginated_events = EventModel.get_list(query_params=filters,
                                                page=page,
                                                limit=limit)
 
         response = create_pagination(items=paginated_events,
                                      schema=event_list_schema,
                                      page=page,
+                                     limit=limit,
                                      query_params=filters,
                                      url=request.base_url)
 
@@ -66,7 +89,11 @@ class ListCreateEvent(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def post(cls):
+    def post(cls) -> Tuple[Dict, int]:
+        """
+        Create new Event
+        :return: Tuple[Dict, int]
+        """
         event_json = request.get_json()
 
         if EventModel.find_by_name(event_json.get('name')):

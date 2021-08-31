@@ -1,3 +1,6 @@
+"""
+Module for our Guest Endpoints
+"""
 import json
 import os
 

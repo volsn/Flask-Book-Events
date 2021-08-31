@@ -150,16 +150,21 @@ class EventModel(db.Model):
 
     @classmethod
     def get_list(cls, page: int = 1, limit: int = 20,
-                 filters: Optional[Dict] = None) -> Pagination:
+                 query_params: Optional[Dict] = None) -> Pagination:
         """
         Apply specified filters on the object
         and, then order and paginate them
         :param page: int = 1
         :param limit: int = 20
-        :param filters: Optional[Dict] = None
+        :param query_params: Optional[Dict] = None
         :return: Pagination
         """
-        filters = filters or {}
+        query_params = query_params or {}
+
+        order_by = getattr(cls, query_params.pop('order_by', 'id'))
+        order = query_params.pop('order', 'id')
+        order_by = order_by.desc() if order == 'desc' else order_by.asc()
+
         filter_queries = {
             'status': cls.filter_by_status,
             'participant': cls.filter_by_participant,
@@ -169,9 +174,11 @@ class EventModel(db.Model):
         query = cls.query
         # Return empty query when user specifies unsupported filter
         plug = lambda x, y: cls.query.filter(False)
-        for field, value in filters.items():
+        for field, value in query_params.items():
             query = filter_queries.get(field, plug)(value, query)
-        return query.order_by(cls.id).paginate(page, limit, error_out=False)
+
+        return query.order_by(order_by)\
+            .paginate(page, limit, error_out=False)
 
     @classmethod
     def get_guests_list(cls, event_id: int, page: int = 1, limit: int = 20) \
