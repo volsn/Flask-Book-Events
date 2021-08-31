@@ -2,7 +2,7 @@ import os
 
 import jwt
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 from flask_admin import Admin
 from flask_babel import Babel, gettext as _
 from flask_migrate import Migrate
