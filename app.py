@@ -6,13 +6,17 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_babel import Babel
+from flask_admin import Admin
 from marshmallow import ValidationError
 
 from db import db
 from ma import ma
+from admin import EventModelAdmin
 from resources.event import RetrieveUpdateDestroyEvent, ListCreateEvent
 from resources.guest import Login, EventGuests, GuestResource
 from resources.participant import EventParticipants, ParticipantResource
+from models.event import EventModel
+
 
 app = Flask('foo')
 load_dotenv('.env')
@@ -27,6 +31,7 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 api = Api(app)
 babel = Babel(app)
+admin = Admin(app, name='Events', template_mode='bootstrap4')
 migrate = Migrate(app, db)
 
 
@@ -72,8 +77,11 @@ api.add_resource(GuestResource,
 api.add_resource(ParticipantResource,
                  '/participants/<int:id_>')
 
-db.init_app(app)
-ma.init_app(app)
+
+admin.add_view(EventModelAdmin(EventModel, db.session))
 
 if __name__ == '__main__':
+    db.init_app(app)
+    ma.init_app(app)
+
     app.run(port=5000, debug=True)
