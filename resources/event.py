@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 from flask import request
 from flask_babel import gettext as _
 from flask_restful import Resource
@@ -14,7 +16,7 @@ event_list_schema = EventSchema(many=True,
 
 class RetrieveUpdateDestroyEvent(Resource):
     @classmethod
-    def get(cls, id_: int):
+    def get(cls, id_: int) -> Tuple[Dict, int]:
         event = EventModel.find_by_id(id_)
         if event:
             return event_schema.dump(event), 200
