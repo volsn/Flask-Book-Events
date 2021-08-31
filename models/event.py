@@ -159,7 +159,7 @@ class EventModel(db.Model):
         :param query_params: Optional[Dict] = None
         :return: Pagination
         """
-        query_params = query_params or {}
+        query_params = (query_params or {}).copy()
 
         order_by = getattr(cls, query_params.pop('order_by', 'id'))
         order = query_params.pop('order', 'id')

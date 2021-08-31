@@ -8,7 +8,7 @@ def create_pagination(*, items, schema,  page: int = 1,
         'limit': limit,
     }
 
-    query_params = query_params or {}
+    query_params = (query_params or {}).copy()
     query_params = ''.join(
         [f'&{key}={value}' for key, value in query_params.items()])
 

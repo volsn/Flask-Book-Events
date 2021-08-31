@@ -18,6 +18,9 @@ event_list_schema = EventSchema(many=True,
 
 
 class RetrieveUpdateDestroyEvent(Resource):
+    """
+    Resource for manging Events
+    """
     @classmethod
     def get(cls, id_: int) -> Tuple[Dict, int]:
         """
@@ -64,6 +67,9 @@ class RetrieveUpdateDestroyEvent(Resource):
 
 
 class ListCreateEvent(Resource):
+    """
+    Resource for listing and creating Events
+    """
     @classmethod
     def get(cls) -> Tuple[Dict, int]:
         """
@@ -74,7 +80,7 @@ class ListCreateEvent(Resource):
         page = int(filters.pop('page', 1))
         limit = int(filters.pop('limit', 20))
 
-        paginated_events = EventModel.get_list(query_params=filters,
+        paginated_events = EventModel.get_list(query_params=filters.copy(),
                                                page=page,
                                                limit=limit)
 
