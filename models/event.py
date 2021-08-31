@@ -9,18 +9,26 @@ from db import db
 from models.guest import GuestModel
 from models.participant import ParticipantModel
 
-guest_event = db.Table(
-    'guest_event',
-    db.Column('guest_id', db.Integer(), db.ForeignKey('guests.id')),
-    db.Column('event_id', db.Integer(), db.ForeignKey('events.id'))
-)
 
-participant_event = db.Table(
-    'participant_event',
-    db.Column('participant_id', db.Integer(),
-              db.ForeignKey('participants.id')),
-    db.Column('event_id', db.Integer(), db.ForeignKey('events.id')),
-)
+class GuestEventModel(db.Model):
+    __tablename__ = 'guest_event'
+    guest_id = db.Column(db.Integer(),
+                         db.ForeignKey('guests.id', ondelete='CASCADE'),
+                         primary_key=True)
+    event_id = db.Column(db.Integer(),
+                         db.ForeignKey('events.id', ondelete='CASCADE'),
+                         primary_key=True)
+
+
+class ParticipantEvent(db.Model):
+    __tablename__ = 'participant_event'
+    participant_id = db.Column(db.Integer(),
+                               db.ForeignKey('participants.id',
+                                             ondelete='CASCADE'),
+                               primary_key=True)
+    event_id = db.Column(db.Integer(),
+                         db.ForeignKey('events.id', ondelete='CASCADE'),
+                         primary_key=True)
 
 
 class EventModel(db.Model):
