@@ -5,7 +5,7 @@ from flask_restful import Resource
 from models.event import EventModel
 from schemas.event import EventSchema
 from utils.auth import jwt_required
-from utils.pagination import create_pagination
+from utils.pagination import create_pagination, create_parser
 
 event_schema = EventSchema()
 event_list_schema = EventSchema(many=True,
@@ -67,7 +67,7 @@ class ListCreateEvent(Resource):
     def post(cls):
         event_json = request.get_json()
 
-        if EventModel.find_by_name(event_json['name']):
+        if EventModel.find_by_name(event_json.get('name')):
             return {
                        'message': _('event_already_exists')
                            .format(event_json['name'])

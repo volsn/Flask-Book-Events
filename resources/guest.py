@@ -10,7 +10,7 @@ from models.event import EventModel
 from models.guest import GuestModel
 from schemas.guest import GuestSchema
 from utils.auth import jwt_required, decode_token
-from utils.pagination import create_pagination
+from utils.pagination import create_pagination, create_parser
 
 guest_list_schema = GuestSchema(many=True)
 
@@ -29,10 +29,12 @@ class Login(Resource):
 
 class EventGuests(Resource):
 
+    parser = create_parser()
+
     @classmethod
     def get(cls, event_id: int):
-        page = int(request.args.get('page', 1))
-        limit = int(request.args.get('limit', 20))
+        args = cls.parser.parse_args()
+        page, limit = args['page'], args['limit']
 
         paginated_events = EventModel.get_guests_list(event_id=event_id,
                                                       page=page,

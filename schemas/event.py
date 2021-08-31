@@ -18,7 +18,7 @@ class EventSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = EventModel
-        dump_only = ('id',)
+        dump_only = ('id', 'participants',)
         include_fk = True
 
     @staticmethod
