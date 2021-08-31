@@ -47,10 +47,10 @@ class ListCreateEvent(Resource):
     @classmethod
     def get(cls):
         filters = dict(request.args)
-        page = int(filters.pop('page', 1))  # TODO: Check if we need int()
+        page = int(filters.pop('page', 1))
         limit = int(filters.pop('limit', 20))
 
-        paginated_events = EventModel.get_list(filters=request.args,
+        paginated_events = EventModel.get_list(filters=filters,
                                                page=page,
                                                limit=limit)
 
@@ -58,7 +58,7 @@ class ListCreateEvent(Resource):
                                      schema=event_list_schema,
                                      page=page,
                                      query_params=filters,
-                                     url=request.url_root)
+                                     url=request.base_url)
 
         return response, 200
 

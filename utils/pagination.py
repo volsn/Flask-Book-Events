@@ -29,7 +29,7 @@ def create_pagination(*, items, schema,  page: int = 1,
         'next'] = f'{url}?page={next_}' \
                   f'&limit={limit}{query_params}' if next_ else ''
 
-    prev = items.next_num
+    prev = items.prev_num
     response[
         'prev'] = f'{url}?page={prev}' \
                   f'&limit={limit}{query_params}' if prev else ''
