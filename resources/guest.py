@@ -12,6 +12,7 @@ from schemas.guest import GuestSchema
 from utils.auth import jwt_required, decode_token
 from utils.pagination import create_pagination, create_parser
 
+guest_schema = GuestSchema()
 guest_list_schema = GuestSchema(many=True)
 
 
@@ -93,8 +94,11 @@ class EventGuests(Resource):
 
 class GuestResource(Resource):
     @classmethod
-    def get(cls):
-        pass
+    def get(cls, id_):
+        guest = GuestModel.find_by_id(id_)
+        if guest:
+            return guest_schema.dump(guest)
+        return {'message': _('user_not_found').format(id_)}, 404
 
     @classmethod
     @jwt_required(admin=True, owner=True)

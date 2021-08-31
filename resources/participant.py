@@ -7,7 +7,11 @@ from flask_babel import gettext as _
 
 from models.event import EventModel
 from models.participant import ParticipantModel
+from schemas.participant import ParticipantSchema
 from utils.auth import jwt_required
+
+
+participant_schema = ParticipantSchema()
 
 
 class EventParticipants(Resource):
@@ -62,8 +66,11 @@ class EventParticipants(Resource):
 
 class ParticipantResource(Resource):
     @classmethod
-    def get(cls):
-        pass
+    def get(cls, id_):
+        participant = ParticipantModel.find_by_id(id_)
+        if participant:
+            return participant_schema.dump(participant)
+        return {'message': _('author_not_found').format(id_)}, 404
 
     @classmethod
     @jwt_required(admin=True)
