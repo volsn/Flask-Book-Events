@@ -2,14 +2,13 @@ import os
 
 import requests
 from flask import request
-from flask_restful import Resource
 from flask_babel import gettext as _
+from flask_restful import Resource
 
 from models.event import EventModel
 from models.participant import ParticipantModel
 from schemas.participant import ParticipantSchema
 from utils.auth import jwt_required
-
 
 participant_schema = ParticipantSchema()
 

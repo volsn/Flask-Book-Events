@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Union, Any, Optional
+from typing import Dict, Optional
 
 from flask_sqlalchemy import Pagination, BaseQuery
 from sqlalchemy import and_
@@ -86,7 +86,7 @@ class EventModel(db.Model):
             -> BaseQuery:
         id_ = int(id_)
         queryset = queryset or cls.query
-        return queryset.join(ParticipantEventModel)\
+        return queryset.join(ParticipantEventModel) \
             .filter(ParticipantEventModel.participant_id == id_)
 
     @classmethod

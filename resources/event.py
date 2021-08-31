@@ -5,7 +5,7 @@ from flask_restful import Resource
 from models.event import EventModel
 from schemas.event import EventSchema
 from utils.auth import jwt_required
-from utils.pagination import create_pagination, create_parser
+from utils.pagination import create_pagination
 
 event_schema = EventSchema()
 event_list_schema = EventSchema(many=True,

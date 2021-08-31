@@ -29,7 +29,6 @@ class Login(Resource):
 
 
 class EventGuests(Resource):
-
     parser = create_parser()
 
     @classmethod

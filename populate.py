@@ -3,12 +3,11 @@ import pickle
 import random
 
 from faker import Faker
-from  sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func
 
 from app import app
 from models.guest import GuestModel
 from models.participant import ParticipantModel
-
 
 app.app_context().push()
 
