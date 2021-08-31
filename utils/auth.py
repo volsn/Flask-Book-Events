@@ -6,6 +6,7 @@ from typing import Dict, Callable, Union
 
 import jwt
 from flask import request, Response
+from flask_babel import gettext as _
 
 
 class jwt_required:
@@ -24,7 +25,7 @@ class jwt_required:
                     if claims.get('id') != kwargs.get('id_'):
                         return Response(json.dumps(
                             {
-                                'message': 'Owner or Admin Rights Required'
+                                'message': _('owner_or_admin_required')
                             }),
                             status=400,
                             content_type='application/json')
@@ -34,7 +35,7 @@ class jwt_required:
                     if not claims.get('is_admin'):
                         return Response(json.dumps(
                             {
-                                'message': 'Admin Rights required.'
+                                'message': _('admin_required')
                             }),
                             status=400,
                             content_type='application/json')
@@ -43,7 +44,7 @@ class jwt_required:
 
             return Response(json.dumps(
                 {
-                    'message': 'Authorization required.'
+                    'message': _('login_required')
                 }),
                 status=400,
                 content_type='application/json')
@@ -57,5 +58,5 @@ def decode_token(token: str) -> Dict:
                         algorithms='HS256')
 
     if int(claims.get('exp')) < int(datetime.now().strftime('%s')):
-        raise jwt.PyJWTError('Token expired.')
+        raise jwt.PyJWTError(_('token_expired'))
     return claims

@@ -3,6 +3,7 @@ import os
 
 import requests
 from flask import request
+from flask_babel import gettext as _
 from flask_restful import Resource
 
 from models.event import EventModel
@@ -49,7 +50,7 @@ class EventGuests(Resource):
     def post(cls, event_id: int):
         event = EventModel.find_by_id(event_id)
         if event is None:
-            return {'message': 'Event not found.'}, 404
+            return {'message': _('event_not_found').format(event_id)}, 404
 
         claims = decode_token(request.headers['Authorization'])
 
@@ -62,30 +63,30 @@ class EventGuests(Resource):
             guest.save_to_db()
 
         if guest in event.guests:
-            return {'message': 'Already registered.'}, 400
+            return {'message': _('user_already_registered_for_event')}, 400
 
         event.guests.append(guest)
         event.save_to_db()
 
-        return {'message': 'Successfully registered for Event.'}, 200
+        return {'message': _('registered_for_event')}, 200
 
     @classmethod
     @jwt_required()
     def delete(cls, event_id: int):
         event = EventModel.find_by_id(event_id)
         if event is None:
-            return {'message': 'Event not found.'}, 404
+            return {'message': _('event_not_found').format(event_id)}, 404
 
         claims = decode_token(request.headers['Authorization'])
 
         guest = GuestModel.find_by_id(claims['id'])
         if guest is None or guest not in event.guests:
-            return {'message': 'You are not registered for Event.'}, 400
+            return {'message': _('user_not_registered_for_event')}, 400
 
         event.guests.remove(guest)
         event.save_to_db()
 
-        return {'message': 'Successfully unregister from Event.'}, 200
+        return {'message': _('unregistered_from_event')}, 200
 
 
 class GuestResource(Resource):
@@ -104,19 +105,19 @@ class GuestResource(Resource):
         user_details = requests.get(f'{books_url}/api/user/{id_}')
 
         if user_details.status_code != 200:
-            return {'message': f'Error loading User details.'}, 500
+            return {'message': _('error_loading_user')}, 500
 
         guest.name = user_details.json()['name']
         guest.save_to_db()
 
-        return {'message': 'Updated Profile.'}, 200
+        return {'message': _('profile_updated')}, 200
 
     @classmethod
     @jwt_required(admin=True, owner=True)
     def delete(cls, id_):
         guest = GuestModel.find_by_id(id_)
         if guest is None:
-            return {'message': f'User with id {id_} not found.'}, 404
+            return {'message': _('user_not_found').format(id_)}, 404
 
         guest.delete_from_db()
-        return {'message': 'User successfully deleted.'}, 200
+        return {'message': _('user_deleted')}, 200

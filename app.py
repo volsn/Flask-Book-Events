@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api
+from flask_babel import Babel
 from marshmallow import ValidationError
 
 from db import db
@@ -15,16 +16,30 @@ from resources.participant import EventParticipants, ParticipantResource
 
 app = Flask('foo')
 load_dotenv('.env')
-app.config["DEBUG"] = True
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-    "DATABASE_URI", "sqlite:///data.db"
+app.config['DEBUG'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'DATABASE_URI', 'sqlite:///data.db'
 )
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.secret_key = os.getenv('SECRET_KEY')
 
 api = Api(app)
+babel = Babel(app)
 migrate = Migrate(app, db)
+
+
+@babel.localeselector
+def get_locale():
+    return 'en'
+
+
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
 
 
 @app.before_first_request

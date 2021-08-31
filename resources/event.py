@@ -1,10 +1,10 @@
 from flask import request
+from flask_babel import gettext as _
 from flask_restful import Resource
 
 from models.event import EventModel
 from schemas.event import EventSchema
 from utils.auth import jwt_required
-
 from utils.pagination import create_pagination
 
 event_schema = EventSchema()
@@ -19,7 +19,7 @@ class RetrieveUpdateDestroyEvent(Resource):
         if event:
             return event_schema.dump(event), 200
 
-        return {'message': 'Event not found'}, 404
+        return {'message': _('event_not_found').format(id_)}, 404
 
     @classmethod
     @jwt_required(admin=True)
@@ -30,7 +30,7 @@ class RetrieveUpdateDestroyEvent(Resource):
         if event:
             event.update_in_db(data=event_json)
             return event_schema.dump(event), 200
-        return {'message': 'Event not found'}, 404
+        return {'message': _('event_not_found').format(id_)}, 404
 
     @classmethod
     @jwt_required(admin=True)
@@ -39,8 +39,8 @@ class RetrieveUpdateDestroyEvent(Resource):
 
         if event:
             event.delete_from_db()
-            return {'message': 'Event Deleted.'}, 200
-        return {'message': 'Event not found.'}, 404
+            return {'message': _('event_not_found').format(id_)}, 404
+        return {'message': _('event_deleted').format(id_)}, 404
 
 
 class ListCreateEvent(Resource):
@@ -69,8 +69,9 @@ class ListCreateEvent(Resource):
 
         if EventModel.find_by_name(event_json['name']):
             return {
-                       'message': f'Event with name"{event_json["name"]}" '
-                                  f'already exists.'}, 400
+                       'message': _('event_already_exists')
+                           .format(event_json['name'])
+                   }, 400
 
         event = event_schema.load(event_json)
         event.save_to_db()

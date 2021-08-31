@@ -8,7 +8,6 @@ from schemas.participant import ParticipantSchema
 class EventSchema(ma.SQLAlchemyAutoSchema):
     start = fields.DateTime(format='%Y.%m.%d %H:%M')
     end = fields.DateTime(format='%Y.%m.%d %H:%M')
-    # guests = fields.Nested(GuestSchema, many=True)
     participants = fields.Nested(ParticipantSchema, many=True)
     status = fields.String()
 

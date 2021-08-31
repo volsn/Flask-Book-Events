@@ -3,6 +3,7 @@ import os
 import requests
 from flask import request
 from flask_restful import Resource
+from flask_babel import gettext as _
 
 from models.event import EventModel
 from models.participant import ParticipantModel
@@ -15,7 +16,7 @@ class EventParticipants(Resource):
     def post(cls, event_id: int):
         event = EventModel.find_by_id(event_id)
         if event is None:
-            return {'message': 'Event not found.'}, 404
+            return {'message': _('event_not_found').format(event_id)}, 404
 
         body = request.get_json()
         for id_ in body.get('participants'):
@@ -30,32 +31,33 @@ class EventParticipants(Resource):
                 participant.save_to_db()
 
             if participant in event.participants:
-                return {'message': f'Author with id {id_} '
-                                   f'already registered.'}, 400
+                return {
+                           'message': _('author_already_registered_for_event')
+                       }, 400
 
             event.participants.append(participant)
             event.save_to_db()
 
-        return {'message': 'Successfully registered for Event.'}, 200
+        return {'message': _('registered_for_event')}, 200
 
     @classmethod
     @jwt_required(admin=True)
     def delete(cls, event_id: int):
         event = EventModel.find_by_id(event_id)
         if event is None:
-            return {'message': 'Event not found.'}, 404
+            return {'message': _('event_not_found')}, 404
 
         body = request.get_json()
         for id_ in body.get('participants'):
             participant = ParticipantModel.find_by_id(id_)
 
             if participant is None or participant not in event.participants:
-                return {'message': f'Participant with id {id_} not found'}, 404
+                return {'message': _('author_not_found').format(id_)}, 404
 
             event.participants.remove(participant)
             event.save_to_db()
 
-        return {'message': 'Successfully unregister from Event.'}, 200
+        return {'message': _('unregistered_from_event')}, 200
 
 
 class ParticipantResource(Resource):
@@ -74,18 +76,18 @@ class ParticipantResource(Resource):
         author_details = requests.get(f'{books_url}/api/author/{id_}')
 
         if author_details.status_code != 200:
-            return {'message': f'Error loading Author details.'}, 500
+            return {'message': _('error_loading_author')}, 500
 
         participant.name = author_details.json()['name']
         participant.save_to_db()
-        return {'message': 'Updated Author.'}, 200
+        return {'message': _('updated_author')}, 200
 
     @classmethod
     @jwt_required(admin=True)
     def delete(cls, id_):
         participant = ParticipantModel.find_by_id(id_)
         if participant is None:
-            return {'message': f'Author with id {id_} not found.'}, 404
+            return {'message': _('author_not_found').format(id_)}, 404
 
         participant.delete_from_db()
-        return {'message': 'Author successfully deleted.'}, 200
+        return {'message': _('author_deleted')}, 200

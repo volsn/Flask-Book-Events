@@ -1,0 +1,106 @@
+# English translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-08-30 16:58+0300\n"
+"PO-Revision-Date: 2021-08-30 16:58+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: resources/event.py:22 resources/event.py:33 resources/event.py:42
+#: resources/guest.py:53 resources/guest.py:78 resources/participant.py:19
+#: resources/participant.py:48
+msgid "event_not_found"
+msgstr "Event with id {} not found."
+
+#: resources/event.py:43
+msgid "event_deleted"
+msgstr "Event successfully deleted."
+
+#: resources/event.py:72
+msgid "event_already_exists"
+msgstr "Event with name {} already exists."
+
+#: resources/guest.py:66
+msgid "user_already_registered_for_event"
+msgstr "User already registered for Event."
+
+#: resources/guest.py:71 resources/participant.py:41
+msgid "registered_for_event"
+msgstr "Successfully registered for Event."
+
+#: resources/guest.py:84
+msgid "user_not_registered_for_event"
+msgstr "User is not registered for Event."
+
+#: resources/guest.py:89
+msgid "unregistered_from_event"
+msgstr "Successfully unregistered from Event."
+
+#: resources/guest.py:108
+msgid "error_loading_user"
+msgstr "Error loading User."
+
+#: resources/guest.py:113
+msgid "profile_updated"
+msgstr "User Profile successfully updated."
+
+#: resources/guest.py:120
+msgid "user_not_found"
+msgstr "User with id {} not found."
+
+#: resources/guest.py:123
+msgid "user_deleted"
+msgstr "User Profile successfully deleted."
+
+#: resources/participant.py:35
+msgid "author_already_registered_for_event"
+msgstr "Participant already registered for event."
+
+#: resources/participant.py:55 resources/participant.py:90
+msgid "author_not_found"
+msgstr "Author with id {} not found"
+
+#: resources/participant.py:60
+msgid "unregistered_from_event"
+msgstr "Successfully unregistered from event."
+
+#: resources/participant.py:79
+msgid "error_loading_author"
+msgstr "Error loading Author."
+
+#: resources/participant.py:83
+msgid "updated_author"
+msgstr "Successfully updated Author Profile."
+
+#: resources/participant.py:93
+msgid "author_deleted"
+msgstr "Author Profile successfully deleted."
+
+#: utils/auth.py:28
+msgid "owner_or_admin_required"
+msgstr "Owner or Admin Rights required."
+
+#: utils/auth.py:38
+msgid "admin_required"
+msgstr "Admin rights required."
+
+#: utils/auth.py:47
+msgid "login_required"
+msgstr "Login required."
+
+#: utils/auth.py:61
+msgid "token_expired"
+msgstr "Token expired."
+
