@@ -1,17 +1,5 @@
 from typing import Dict
 
-from flask_restful import reqparse
-from flask_babel import gettext as _
-
-
-def create_parser() -> reqparse.RequestParser:
-    pagination_parser = reqparse.RequestParser()
-    pagination_parser.add_argument('page', type=int, default=1,
-                                   help=_('page_number'))
-    pagination_parser.add_argument('limit', type=int, default=20,
-                                   help=_('limit'))
-    return pagination_parser
-
 
 def create_pagination(*, items, schema,  page: int = 1,
                       limit: int = 20, query_params: Dict = None, url: str):
