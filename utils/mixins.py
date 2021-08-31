@@ -1,12 +1,11 @@
 from typing import Dict, Tuple
 
-from flask_admin.contrib.sqla import ModelView
 from flask_babel import gettext as _
 
 from utils.auth import jwt_required
 
 
-class AdminRequiredMixin(ModelView):
+class AdminRequiredMixin:
     @jwt_required(admin=True)
     def is_accessible(self) -> bool:
         return True

@@ -1,15 +1,22 @@
-from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-
-from models.event import EventModel, guest_event, participant_event
-from models.participant import ParticipantModel
-from models.guest import GuestModel
 
 from utils.mixins import AdminRequiredMixin
 
 
-class EventModelAdmin(AdminRequiredMixin):
+class EventAdmin(AdminRequiredMixin, ModelView):
+    # column_hide_backrefs = False  # TODO
     can_export = True
     column_searchable_list = ('name', 'description',)
-    column_list = ('id', 'name', 'start', 'end', 'description',)
+    column_list = ('id', 'name', 'start', 'end', 'description', 'guests')
 
+
+class ParticipantAdmin(AdminRequiredMixin, ModelView):
+    can_export = True
+    column_searchable_list = ('name',)
+    column_list = ('id', 'name',)
+
+
+class GuestAdmin(AdminRequiredMixin, ModelView):
+    can_export = True
+    column_searchable_list = ('name',)
+    column_list = ('id', 'name',)

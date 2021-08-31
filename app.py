@@ -3,20 +3,21 @@ import os
 import jwt
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_admin import Admin
+from flask_babel import Babel, gettext as _
 from flask_migrate import Migrate
 from flask_restful import Api
-from flask_babel import Babel
-from flask_admin import Admin
 from marshmallow import ValidationError
 
+from admin import EventAdmin, GuestAdmin, ParticipantAdmin
 from db import db
 from ma import ma
-from admin import EventModelAdmin
+from models.event import EventModel
+from models.guest import GuestModel
+from models.participant import ParticipantModel
 from resources.event import RetrieveUpdateDestroyEvent, ListCreateEvent
 from resources.guest import Login, EventGuests, GuestResource
 from resources.participant import EventParticipants, ParticipantResource
-from models.event import EventModel
-
 
 app = Flask('foo')
 load_dotenv('.env')
@@ -77,11 +78,18 @@ api.add_resource(GuestResource,
 api.add_resource(ParticipantResource,
                  '/participants/<int:id_>')
 
+admin.add_view(EventAdmin(EventModel,
+                          db.session,
+                          name=_('events')))
+admin.add_view(ParticipantAdmin(ParticipantModel,
+                                db.session,
+                                name=_('authors')))
+admin.add_view(GuestAdmin(GuestModel,
+                          db.session,
+                          name=_('guests')))
 
-admin.add_view(EventModelAdmin(EventModel, db.session))
+db.init_app(app)
+ma.init_app(app)
 
 if __name__ == '__main__':
-    db.init_app(app)
-    ma.init_app(app)
-
     app.run(port=5000, debug=True)
