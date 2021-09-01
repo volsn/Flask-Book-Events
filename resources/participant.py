@@ -1,4 +1,8 @@
+"""
+Module for our Participant Endpoints
+"""
 import os
+from typing import Tuple, Dict
 
 import requests
 from flask import request
@@ -14,9 +18,18 @@ participant_schema = ParticipantSchema()
 
 
 class EventParticipants(Resource):
+    """
+    Resource for managing Participants Registrations for Events
+    """
     @classmethod
     @jwt_required(admin=True)
-    def post(cls, event_id: int):
+    def post(cls, event_id: int) -> Tuple[Dict, int]:
+        """
+        Register participants for events.
+        Only available to admin
+        :param event_id: int
+        :return: Tuple[Dict, int]
+        """
         event = EventModel.find_by_id(event_id)
         if event is None:
             return {'message': _('event_not_found').format(event_id)}, 404
@@ -45,7 +58,13 @@ class EventParticipants(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def delete(cls, event_id: int):
+    def delete(cls, event_id: int) -> Tuple[Dict, int]:
+        """
+        Unregister participants for events.
+        Only available to admin
+        :param event_id: int
+        :return: Tuple[Dict, int]
+        """
         event = EventModel.find_by_id(event_id)
         if event is None:
             return {'message': _('event_not_found')}, 404
@@ -65,7 +84,12 @@ class EventParticipants(Resource):
 
 class ParticipantResource(Resource):
     @classmethod
-    def get(cls, id_):
+    def get(cls, id_) -> Tuple[Dict, int]:
+        """
+        Retrieve Details about Participant
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         participant = ParticipantModel.find_by_id(id_)
         if participant:
             return participant_schema.dump(participant)
@@ -73,7 +97,14 @@ class ParticipantResource(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def put(cls, id_):
+    def put(cls, id_) -> Tuple[Dict, int]:
+        """
+        Update Details about Participant in the database.
+        The new Data is taken from the book reviews api.
+        Can only be called by Admin
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         participant = ParticipantModel.find_by_id(id_)
         if participant is None:
             participant = ParticipantModel(id=id_)
@@ -90,7 +121,12 @@ class ParticipantResource(Resource):
 
     @classmethod
     @jwt_required(admin=True)
-    def delete(cls, id_):
+    def delete(cls, id_) -> Tuple[Dict, int]:
+        """
+        Delete Participant Profile. Can only be done by Admin
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
         participant = ParticipantModel.find_by_id(id_)
         if participant is None:
             return {'message': _('author_not_found').format(id_)}, 404

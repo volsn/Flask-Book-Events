@@ -1,5 +1,5 @@
 """
-Module for our Guest Endpoints
+Module for Guest Endpoints
 """
 import json
 import os
@@ -41,7 +41,7 @@ class Login(Resource):
 
 class EventGuests(Resource):
     """
-    Resource for managing guests Registrations for Events
+    Resource for managing Guests Registrations for Events
     """
     pagination_parser = reqparse.RequestParser()
     pagination_parser.add_argument('page', type=int, default=1,
