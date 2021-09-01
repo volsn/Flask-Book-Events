@@ -24,7 +24,7 @@ from resources.guest import Login, EventGuests, GuestResource
 from resources.participant import EventParticipants, ParticipantResource
 
 # Define app configs
-app = Flask('foo')
+app = Flask(__name__)
 load_dotenv('.env')
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
