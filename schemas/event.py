@@ -2,7 +2,7 @@
 Module with Event Schema
 """
 from datetime import datetime
-from plistlib import Dict
+from typing import Dict
 
 from flask_babel import format_datetime
 from marshmallow import fields, post_load
