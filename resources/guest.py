@@ -56,7 +56,7 @@ class EventGuests(Resource):
         :param event_id: int
         :return: Tuple[Dict, int]
         """
-        args = cls.parser.parse_args()
+        args = cls.pagination_parser.parse_args()
         page, limit = args['page'], args['limit']
 
         paginated_events = EventModel.get_guests_list(event_id=event_id,
