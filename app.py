@@ -1,8 +1,12 @@
+"""
+Main Script for Setup and App running
+"""
 import os
+from typing import Tuple
 
 import jwt
 from dotenv import load_dotenv
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify, g, Response
 from flask_admin import Admin
 from flask_babel import Babel, gettext as _
 from flask_migrate import Migrate
@@ -19,6 +23,7 @@ from resources.event import RetrieveUpdateDestroyEvent, ListCreateEvent
 from resources.guest import Login, EventGuests, GuestResource
 from resources.participant import EventParticipants, ParticipantResource
 
+# Define app configs
 app = Flask('foo')
 load_dotenv('.env')
 app.config['DEBUG'] = True
@@ -37,32 +42,56 @@ migrate = Migrate(app, db)
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> str:
+    """
+    Return most suitable locale for current user
+    :return: str
+    """
     return 'en'
 
 
 @babel.timezoneselector
-def get_timezone():
+def get_timezone() -> str:
+    """
+    Return user timezone
+    :return: str
+    """
     user = getattr(g, 'user', None)
     if user is not None:
         return user.timezone
 
 
 @app.before_first_request
-def create_tables():
+def create_tables() -> None:
+    """
+    Create all tables before first request
+    :return: None
+    """
     db.create_all()
 
 
 @app.errorhandler(ValidationError)
-def handle_marshmallow_validation(err):
+def handle_marshmallow_validation(err: ValidationError) \
+        -> Tuple[Response, int]:
+    """
+    Handler for Marshmallow Validation Exception
+    :param err: ValidationError
+    :return: Tuple[Response, int]
+    """
     return jsonify(err.messages), 400
 
 
 @app.errorhandler(jwt.PyJWTError)
-def handle_jwt_error(err):
+def handle_jwt_error(err: jwt.PyJWTError) -> Tuple[Response, int]:
+    """
+    Handler for JWT Exceptions
+    :param err: jwt.PyJWTError
+    :return: Tuple[Response, int]
+    """
     return jsonify({'message': str(err)}), 400
 
 
+# Register Endpoints
 api.add_resource(ListCreateEvent,
                  '/events')
 api.add_resource(RetrieveUpdateDestroyEvent,
@@ -88,8 +117,12 @@ admin.add_view(GuestAdmin(GuestModel,
                           db.session,
                           name=_('guests')))
 
+# Initialize SQLAlchemy and Marshmallow
 db.init_app(app)
 ma.init_app(app)
 
 if __name__ == '__main__':
+    """
+    Start the app
+    """
     app.run(port=5000, debug=True)
