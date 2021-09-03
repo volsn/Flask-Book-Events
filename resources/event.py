@@ -36,6 +36,22 @@ class RetrieveUpdateDestroyEvent(Resource):
 
     @classmethod
     @jwt_required(admin=True)
+    def patch(cls, id_: int) -> Tuple[Dict, int]:
+        """
+        Partial Update Details about Event
+        :param id_: int
+        :return: Tuple[Dict, int]
+        """
+        event_json = request.get_json()
+        event = EventModel.find_by_id(id_)
+
+        if event:
+            event.update_in_db(data=event_json)
+            return event_schema.dump(event), 200
+        return {'message': _('event_not_found').format(id_)}, 404
+
+    @classmethod
+    @jwt_required(admin=True)
     def put(cls, id_: int) -> Tuple[Dict, int]:
         """
         Update Details about Event
@@ -46,8 +62,10 @@ class RetrieveUpdateDestroyEvent(Resource):
         event = EventModel.find_by_id(id_)
 
         if event:
+            _ = event_schema.load(event_json)
             event.update_in_db(data=event_json)
             return event_schema.dump(event), 200
+        
         return {'message': _('event_not_found').format(id_)}, 404
 
     @classmethod

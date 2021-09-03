@@ -72,7 +72,7 @@ class EventGuests(Resource):
 
     @classmethod
     @jwt_required()
-    def post(cls, event_id: int) -> Tuple[Dict, int]:
+    def put(cls, event_id: int) -> Tuple[Dict, int]:
         """
         Registered authorized User as a guest for the Event.
         User Identity is taken from the provided JWT Token
